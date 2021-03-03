@@ -62,46 +62,88 @@ const registerInfo = dispatch => async({
         firstDose,
         secondDose,
         msg,
-        imageUrl
+        imageUrl,
+        username
     }) =>{
-    try{
-        dispatch({type:'isReading', payload:true})
 
+        try{
+            dispatch({type:'isReading', payload:true})
+            const response = await axios.get(`/verifyUsername.php?username=${username}`)
 
-        const response = await axios.get(`/verifyAccount.php?lastname=${lastName}&firstname=${firstName}&middlename=${middleName}&birthdate=${birthdate}`)
-    
-        if(response.data.success){
-            dispatch({type:'isReading', payload:false})
-            alert("Account already exist")
-        }
-        else{
-
-            try{
-            const response = await axios.get(`/register.php?lastname=${lastName}&firstname=${firstName}&middlename=${middleName}&birthdate=${birthdate}&email=${email}&address=${address}&jobsite=${jobsite}&vaccine=${vaccine}&firstDose=${firstDose}&secondDose=${secondDose}&msg=${msg}&imageUrl=${imageUrl}`)
-            // alert(JSON.stringify(response.data.data))
-                if(response.data){
-                    dispatch({type:'isReading', payload:false})
-                alert('success')
-                }
-                else{
-                    dispatch({type:'isReading', payload:false})
-                    alert("try again later")
-                }
-            }catch(err){
+            if(response.data.success){
                 dispatch({type:'isReading', payload:false})
-                alert("Something went wrong, please try again later")
+                alert("Username already exist, Please try another one")
             }
-       
-            
-        }
-        
+            else{
 
-    }catch (err){
-        // alert(JSON.stringify(err))
-        dispatch({type:'isReading', payload:false})
-        alert(err)
-       
-    }
+                try{
+                    dispatch({type:'isReading', payload:true})
+            
+            
+                    const response = await axios.get(`/verifyAccount.php?lastname=${lastName}&firstname=${firstName}&middlename=${middleName}&birthdate=${birthdate}`)
+                
+                    if(response.data.success){
+                        dispatch({type:'isReading', payload:false})
+                        alert("Account already exist")
+                    }
+                    else{
+            
+                        try{
+                        const response = await axios.get(`/register.php?lastname=${lastName}&firstname=${firstName}&middlename=${middleName}&birthdate=${birthdate}&email=${email}&address=${address}&jobsite=${jobsite}&vaccine=${vaccine}&firstDose=${firstDose}&secondDose=${secondDose}&msg=${msg}&imageUrl=${imageUrl}&username=${username}`)
+                        // alert(JSON.stringify(response.data.data))
+                            if(response.data){
+                                // dispatch({type:'isReading', payload:false})
+                            // alert('success')
+                            // alert(JSON.stringify(response.data))
+                            try{
+                                // dispatch({type:'isReading', payload:true})
+                        
+                                const responses = await axios.post(`https://owwa.gov.ph/owwa_mobile_app/owwa_app/sendgrid/vaccine_app/?ofwid=${username}&fullname=${lastName}, ${firstName} ${middleName}&email=${email}&birthdate=${birthdate}`)
+                                    // alert(JSON.stringify(responses))
+                                if(responses.data === "Success"){
+                                        dispatch({type:'isReading', payload:false})
+                                        alert(JSON.stringify("Successfully registered! Please wait for an email regarding to your username and password."))
+                                        // alert(JSON.stringify(responses))
+                                    }else{
+                                        dispatch({type:'isReading', payload:false})
+                                        alert('Something went wrong')
+                                    }
+                               
+                        
+                            }catch (err){
+                                // alert(JSON.stringify(err))
+                                alert('Something went wrong, maybe find a strong internet connection')
+                                dispatch({type:'isReading', payload:false})
+                               
+                            }
+                            }
+                            else{
+                                dispatch({type:'isReading', payload:false})
+                                alert("try again later")
+                            }
+                        }catch(err){
+                            dispatch({type:'isReading', payload:false})
+                            alert("Something went wrong, please try again later")
+                        }
+                   
+                        
+                    }
+                    
+            
+                }catch (err){
+                    // alert(JSON.stringify(err))
+                    dispatch({type:'isReading', payload:false})
+                    alert(err)
+                   
+                }
+
+
+            }
+        }catch(err){
+            dispatch({type:'isReading', payload:false})
+            alert("Something went wrong, try again later...")
+        }
+    
     
 }
 

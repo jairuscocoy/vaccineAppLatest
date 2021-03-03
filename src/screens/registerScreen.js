@@ -29,7 +29,7 @@ const RegisterScreen = ({navigation})=>{
 
     const { state, getJobsite, getVaccine,registerInfo } = useContext(RegisterContext)
 
-    
+    const [username,setUsername] = useState('')
     const [lastName,setLastname] = useState('')
     const [firstName,setFirstname] = useState('')
     const [middleName,setMiddlename] = useState('')
@@ -137,7 +137,8 @@ const RegisterScreen = ({navigation})=>{
                         secondDose,
                         msg,
                         imageUrl,
-                        email
+                        email,
+                        username
                     })
                     // alert('success image')
                     // alert(dateStamp)
@@ -216,6 +217,12 @@ const RegisterScreen = ({navigation})=>{
                                 
                             </TouchableOpacity>
 
+                            <Text style={styles.label}> Username </Text>
+                            <TextInput
+                                placeholder ='Username'
+                                style={styles.txtInput}
+                                onChangeText={setUsername}
+                            />
                             <Text style={styles.label}> Last name </Text>
                             <TextInput
                                 placeholder ='Last name'
