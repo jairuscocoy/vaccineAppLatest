@@ -50,8 +50,63 @@ const getVaccine = dispatch => async() =>{
     
 }
 
+const registerInfo = dispatch => async({
+        lastName,
+        firstName,
+        middleName,
+        birthdate,
+        email,
+        address,
+        jobsite,
+        vaccine,
+        firstDose,
+        secondDose,
+        msg,
+        imageUrl
+    }) =>{
+    try{
+        dispatch({type:'isReading', payload:true})
+
+
+        const response = await axios.get(`/verifyAccount.php?lastname=${lastName}&firstname=${firstName}&middlename=${middleName}&birthdate=${birthdate}`)
+    
+        if(response.data.success){
+            dispatch({type:'isReading', payload:false})
+            alert("Account already exist")
+        }
+        else{
+
+            try{
+            const response = await axios.get(`/register.php?lastname=${lastName}&firstname=${firstName}&middlename=${middleName}&birthdate=${birthdate}&email=${email}&address=${address}&jobsite=${jobsite}&vaccine=${vaccine}&firstDose=${firstDose}&secondDose=${secondDose}&msg=${msg}&imageUrl=${imageUrl}`)
+            // alert(JSON.stringify(response.data.data))
+                if(response.data){
+                    dispatch({type:'isReading', payload:false})
+                alert('success')
+                }
+                else{
+                    dispatch({type:'isReading', payload:false})
+                    alert("try again later")
+                }
+            }catch(err){
+                dispatch({type:'isReading', payload:false})
+                alert("Something went wrong, please try again later")
+            }
+       
+            
+        }
+        
+
+    }catch (err){
+        // alert(JSON.stringify(err))
+        dispatch({type:'isReading', payload:false})
+        alert(err)
+       
+    }
+    
+}
+
 export const { Provider, Context } = createDataContext(
     registerReducer,
-    { getJobsite, getVaccine},
+    { getJobsite, getVaccine, registerInfo},
     {errorMessage:'',loading: false, getJobsite:[], getVaccine:[]}
 )

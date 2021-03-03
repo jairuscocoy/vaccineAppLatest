@@ -17,7 +17,7 @@ const MainScreen = ()=>{
         return (
             <View style={styles.container}>
                 <Text>
-                    Main Screen
+                    Main Screens
                 </Text>
             </View> 
         )

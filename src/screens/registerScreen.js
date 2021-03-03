@@ -17,14 +17,17 @@ import DatePicker from 'react-native-datepicker'
 import {Thumbnail, Picker} from "native-base";
 import RNFetchBlob from 'rn-fetch-blob'
 import ImagePicker from 'react-native-image-crop-picker'
+import moment from 'moment';
+
 import Colors from '../assets/Colors'
 import BackComponent from '../components/backComponent'
- 
+import LoadingComponent from '../components/loadingComponent'
+
 import {Context as RegisterContext} from '../context/registerContext'
 
 const RegisterScreen = ({navigation})=>{
 
-    const { state, getJobsite, getVaccine } = useContext(RegisterContext)
+    const { state, getJobsite, getVaccine,registerInfo } = useContext(RegisterContext)
 
     
     const [lastName,setLastname] = useState('')
@@ -44,7 +47,7 @@ const RegisterScreen = ({navigation})=>{
     const [modalVisible, setModalVisible] = useState(false);
     const [upload, setUpload] = useState(false);
     const [filename, setFilename] = useState('')
-    const bearProfile = require('../assets/images/bear.png')
+    const bearProfile = require('../assets/images/cloud.png')
 
     const _back =()=>{
         navigation.pop()
@@ -71,6 +74,88 @@ const RegisterScreen = ({navigation})=>{
             setModalVisible(!modalVisible)
           });
     }
+
+
+    const uploadImage = async()=> {
+        // alert('nagupload')
+        state.loading =true
+        if(!lastName){
+            alert('Please input your Last name')
+        }
+        else if(!firstName){
+            alert('Please input your First name')
+        }
+        else if(!middleName){
+            alert('Please input your Middle name')
+        }
+        else if(!birthdate){
+            alert('Please input your Birthday')
+        }
+        else if(!email){
+            alert('Please input your Email')
+        }
+        else if(!address){
+            alert('Please input your Address')
+        }
+        else if(!jobsite){
+            alert('Please input your Jobsite')
+        }
+        else if(!vaccine){
+            alert('Please input the name of your vaccine')
+        }
+        else if(!firstDose){
+            alert('Please input your First Dose')
+        }
+        else if(!secondDose){
+            alert('Please input your Second Dose')
+        }
+        else if(!msg){
+            alert('Please input an adverse reaction')
+        }
+        else{
+            let dateStamp = moment().format('x')
+            RNFetchBlob.fetch('POST', 'https://bap.owwa.gov.ph/cocoy/upload_image.php', {
+                otherHeader : "foo",
+                'Content-Type' : 'multipart/form-data',
+            }, [
+                { name : 'image', filename : dateStamp+'_owwa.jpeg',type:'image/jpeg', data: imageData},
+            
+            ]).then((resp) => {
+                // alert(JSON.stringify(resp.data))
+                
+                if(resp.data){
+                    const imageUrl = `https://bap.owwa.gov.ph/cocoy/vaccine_photos/${dateStamp}.owwa.jpeg`
+                    registerInfo({
+                        lastName,
+                        firstName,
+                        middleName,
+                        birthdate,
+                        address,
+                        jobsite,
+                        vaccine,
+                        firstDose,
+                        secondDose,
+                        msg,
+                        imageUrl,
+                        email
+                    })
+                    // alert('success image')
+                    // alert(dateStamp)
+                }else{
+                    
+                    alert('Something went wrong, try again later :(')
+                }
+            })
+        }
+       
+        
+    }
+
+    if(state.loading){
+        return(
+            <LoadingComponent/>
+        )
+      }else{
         return (
             <SafeAreaView style={styles.container}>
                 <BackComponent
@@ -124,10 +209,11 @@ const RegisterScreen = ({navigation})=>{
                             </Text>
                             
                             <TouchableOpacity onPress={()=> setModalVisible(!modalVisible)}>
-                                <View style={{alignItems:'center', marginBottom:30}}>
-                                    <Thumbnail size ={300} large source={!imageUrl ? bearProfile : {uri: imageUrl}} />
+                                <View style={styles.thumbnailStyle}>
+                                    <Thumbnail style={styles.thumbnailStyleImage} square size ={1200} source={!imageUrl ? bearProfile : {uri: imageUrl}} />
+                                    <Text style={{fontWeight:'bold', color:'gray'}}>Upload your photo here</Text>
                                 </View>
-                            
+                                
                             </TouchableOpacity>
 
                             <Text style={styles.label}> Last name </Text>
@@ -176,7 +262,13 @@ const RegisterScreen = ({navigation})=>{
                                 }}
                                 onDateChange={(date) => {setBirthdate(date)}}
                             />
-                            
+
+                            <Text style={styles.label}> Email </Text>
+                            <TextInput
+                                placeholder ='Email'
+                                style={styles.txtInput}
+                                onChangeText={setEmail}
+                            />
 
                             <Text style={styles.label}>Address</Text>
                             <TextInput
@@ -282,12 +374,35 @@ const RegisterScreen = ({navigation})=>{
                                 placeholder='Type here...'
                                 onChangeText = {setMsg}
                             />
+                        {
+                            imageData.length > 0 ?
+                                <TouchableOpacity onPress={()=> uploadImage()}>
+                                    <View style={[styles.submitBtn]}>
+                                        <Text style={styles.btnLabel}>
+                                            Register
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            :
+
+                            <TouchableOpacity onPress={()=> alert('Must upload an image!')}>
+                                <View style={[styles.submitBtn]}>
+                                    <Text style={styles.btnLabel}>
+                                        Register
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        }
+                        
+
                         </ScrollView>
 
                     </KeyboardAvoidingView> 
                 </View>
             </SafeAreaView> 
         )
+      }
+        
   
 }
  
@@ -379,7 +494,36 @@ const styles = StyleSheet.create({
         modalTxt:{
             color:'white',
             fontSize:20
-        }
+        },
+        thumbnailStyle:{
+            alignItems:'center', 
+            marginBottom:30, 
+            borderWidth:1, 
+            borderColor:'gray',
+            width:width/2.5,
+            height: width/2.5,
+            justifyContent:'center'
+        },
+
+        thumbnailStyleImage:{
+            alignItems:'center', 
+            width:width/2.7,
+            height: width/2.7,
+            justifyContent:'center'
+        },
+
+        submitBtn:{
+            width: width * 0.8,
+            height: 60,
+            backgroundColor:Colors.blue,
+            borderRadius:12,
+            justifyContent:'center',
+            alignItems:'center',
+        },
+        btnLabel:{
+            color:'white',
+            fontSize: 16
+        },
 });
 
 export default RegisterScreen
