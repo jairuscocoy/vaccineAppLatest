@@ -11,6 +11,7 @@ import { setNavigator } from '../src/navigationRef'
 
 import {Provider as RegisterProvider} from './context/registerContext'
 import {Provider as AuthProvider} from './context/AuthContext'
+import {Provider as InfoProvider} from './context/getInfoContext'
 
 const switchNavigator = createSwitchNavigator({
     authScreen : ResolveAuthScreen,
@@ -28,10 +29,12 @@ const App= createAppContainer(switchNavigator)
 
 export default () =>{
     return(
-      <AuthProvider>
-        <RegisterProvider>
-           <App ref={(navigator)=>{setNavigator(navigator)}}/>
-        </RegisterProvider>
-      </AuthProvider>
+      <InfoProvider>
+        <AuthProvider>
+          <RegisterProvider>
+            <App ref={(navigator)=>{setNavigator(navigator)}}/>
+          </RegisterProvider>
+        </AuthProvider>
+      </InfoProvider>
     )
 }
