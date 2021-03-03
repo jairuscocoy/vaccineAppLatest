@@ -102,7 +102,8 @@ const registerInfo = dispatch => async({
                                     // alert(JSON.stringify(responses))
                                 if(responses.data === "Success"){
                                         dispatch({type:'isReading', payload:false})
-                                        alert(JSON.stringify("Successfully registered! Please wait for an email regarding to your username and password."))
+                                        alert(JSON.stringify("Successfully registered! Please wait for an email regarding of your password."))
+                                        navigate.pop()
                                         // alert(JSON.stringify(responses))
                                     }else{
                                         dispatch({type:'isReading', payload:false})

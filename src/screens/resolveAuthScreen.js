@@ -2,13 +2,14 @@ import React, {useEffect, useContext} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 // import codePush from 'react-native-code-push'
 
-import {Context as AuthContext} from '../Context/AuthContext'
+import {Context as AuthContext} from '../context/AuthContext'
 
 const AuthScreen = ()=>{
-//     const {state,tryLocalSignIn} = useContext(AuthContext)
-// useEffect(()=>{
-//     tryLocalSignIn()
-// })
+    const {state,resolving} = useContext(AuthContext)
+
+useEffect(()=>{
+    resolving()
+})
     return null
 };
 
