@@ -11,6 +11,7 @@ import {
     ImageBackground,
     Image
 } from 'react-native'
+import moment from 'moment';
 
 import Colors from '../assets/Colors'
 import LoadingComponent from '../components/loadingComponent'
@@ -52,11 +53,48 @@ const MainScreen = ()=>{
                                 <Text style={styles.covidText}> COVID-19</Text>
                                 <Text style ={styles.covidSubText}> Vaccine Certificate</Text>
                             </View>
+                            <View style={styles.profileContainer}>
+                                <Image
+                                    style={styles.profileImage}
+                                    source={{uri: state.getInfo.twobytwopicture}}
+                                    />
+                                <View style={styles.infoContainer}>
+                                    <Text style={styles.label}>Name:</Text>
+                                    <Text style={styles.value}>{state.getInfo.firstname} {state.getInfo.middlename} {state.getInfo.lastname}
+                                    </Text>
 
-                            <Image
-                                style={styles.profileImage}
-                                source={{uri: state.getInfo.twobytwopicture}}
-                                />
+                                    <Text style={styles.label}>Date of Birth:</Text>
+                                    <Text style={styles.value}>{moment(state.getInfo.birthdate).format("MMMM DD YYYY")}
+                                    </Text>
+                                    <Text style={styles.label}>Jobsite:</Text>
+                                    <Text style={styles.value}>{state.getInfo.country}
+                                    </Text>
+                                </View>
+                            </View>
+
+                            <View style={styles.vaccineContainer}>
+                                <Text style={styles.label}>Name of Vaccine</Text>
+                                <Text style={styles.valueV}>{state.getInfo.vaccine_name}</Text>
+
+                                <Text style={styles.label}>Date vaccine given</Text>
+                                <Text style={styles.valueV}>{moment(state.getInfo.datevaccine1).format("YYYY - MMM - DD")}</Text>
+
+                                <Text style={styles.label}>Address</Text>
+                                <Text style={styles.valueV}>{state.getInfo.streetaddress}</Text>
+
+                                <View style={styles.bottomContainer}>
+                                    <View style={{alignItems:'center'}}>
+                                        <Text style={styles.label}>1st Dose</Text>
+                                        <Text style={styles.valueV}>{moment(state.getInfo.datevaccine1).format("YYYY - MMM - DD")}</Text>
+                                    </View>
+
+                                    <View style={{alignItems:'center'}}>
+                                        <Text style={styles.label}>2nd Dose</Text>
+                                        <Text style={styles.valueV}>{moment(state.getInfo.datevaccine2).format("YYYY - MMM - DD")}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            
                         </SafeAreaView>
                     </ScrollView>
                 </ImageBackground>
@@ -71,6 +109,7 @@ MainScreen.navigationOptions = {
 }
 
 const width = Dimensions.get('window').width
+const height = Dimensions.get('window').height
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -123,8 +162,57 @@ const styles = StyleSheet.create({
       },
 
       profileImage:{
-            width: 50,
-            height: 50,
+            width: width/2.5,
+            height: height/4.3,
+      },
+
+      profileContainer:{
+          flexDirection:'row',
+          justifyContent:'space-between',
+          marginHorizontal:10
+      },
+
+      infoContainer:{
+          flexDirection:'column',
+          justifyContent:'flex-start',
+          flex:1,
+          paddingLeft:30,
+      },
+
+      label:{
+          fontSize: 16
+      },
+      value:{
+          fontWeight:'bold',
+          fontSize: 16,
+          textAlign:'left',
+          marginTop:10,
+          marginBottom:20,
+          paddingLeft:10
+      },
+
+      valueV:{
+        fontWeight:'bold',
+        fontSize: 19,
+        marginTop:10,
+        marginBottom:25,
+        textAlign:'center'
+    },
+
+      vaccineContainer:{
+          backgroundColor:'rgba(125,150,253,0.22)',
+          margin:10,
+          alignItems:'center',
+          flex:1,
+          flexDirection:'column',
+          borderRadius:5,
+          padding:20
+      },
+
+      bottomContainer:{
+          flexDirection:'row',
+          justifyContent:'space-between',
+          width:width * 0.9
       }
 });
 

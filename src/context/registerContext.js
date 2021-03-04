@@ -12,8 +12,15 @@ const registerReducer = (state, action) =>{
             return {...state,loading:action.payload.loading, getJobsite: action.payload.getJobsite}
         case 'viewVaccine':
             return {...state,loading:action.payload.loading, getVaccine: action.payload.getVaccine}
+        case 'viewProvince':
+            return {...state,loading:action.payload.loading, getProvince: action.payload.getProvince}
+        case 'viewMe':
+            return {...state,loading:action.payload.loading, getMe: action.payload.getMe}
+        case 'viewBrgy':
+            return {...state,loading:action.payload.loading, getBrgy: action.payload.getBrgy}
+                 
         default :
-            return state
+        return state
     }
 }
 
@@ -33,6 +40,55 @@ const getJobsite = dispatch => async() =>{
     
 }
 
+
+const getProvince = dispatch => async() =>{
+    try{
+        dispatch({type:'isReading', payload:true})
+
+        const response = await axios.get('/province.php')
+        // alert(JSON.stringify(response.data.data))
+        dispatch({type: 'viewProvince', payload: {getProvince : response.data.data, loading:false}})
+
+    }catch (err){
+        // alert(JSON.stringify(err))
+        alert('Something went wrong, maybe find a strong internet connection')
+       
+    }
+    
+}
+
+const getMe = dispatch => async({province}) =>{
+    // alert('tyrr')
+    try{
+        // dispatch({type:'isReading', payload:true})
+
+        const response = await axios.get(`/municipality.php?addressId=${province}`)
+        // alert(JSON.stringify(response.data.data))
+        dispatch({type: 'viewMe', payload: {getMe : response.data.data, loading:false}})
+
+    }catch (err){
+        // alert(JSON.stringify(err))
+        alert('Something went wrong, maybe find a strong internet connection')
+       
+    }
+    
+}
+
+const getBrgy = dispatch => async({municipality}) =>{
+    try{
+        // dispatch({type:'isReading', payload:true})
+
+        const response = await axios.get(`/brgy.php?addressId=${municipality}`)
+        // alert(JSON.stringify(response.data.data))
+        dispatch({type: 'viewBrgy', payload: {getBrgy : response.data.data, loading:false}})
+
+    }catch (err){
+        // alert(JSON.stringify(err))
+        alert('Something went wrong, maybe find a strong internet connection')
+       
+    }
+    
+}
 
 const getVaccine = dispatch => async() =>{
     try{
@@ -56,7 +112,9 @@ const registerInfo = dispatch => async({
         middleName,
         birthdate,
         email,
-        address,
+        province,
+        municipality,
+        brgy,
         jobsite,
         vaccine,
         firstDose,
@@ -89,7 +147,7 @@ const registerInfo = dispatch => async({
                     else{
             
                         try{
-                        const response = await axios.get(`/register.php?lastname=${lastName}&firstname=${firstName}&middlename=${middleName}&birthdate=${birthdate}&email=${email}&address=${address}&jobsite=${jobsite}&vaccine=${vaccine}&firstDose=${firstDose}&secondDose=${secondDose}&msg=${msg}&imageUrl=${imageUrl}&username=${username}`)
+                        const response = await axios.get(`/register.php?lastname=${lastName}&firstname=${firstName}&middlename=${middleName}&birthdate=${birthdate}&email=${email}&province=${province}&municipality=${municipality}&brgy=${brgy}&jobsite=${jobsite}&vaccine=${vaccine}&firstDose=${firstDose}&secondDose=${secondDose}&msg=${msg}&imageUrl=${imageUrl}&username=${username}`)
                         // alert(JSON.stringify(response.data.data))
                             if(response.data){
                                 // dispatch({type:'isReading', payload:false})
@@ -150,6 +208,6 @@ const registerInfo = dispatch => async({
 
 export const { Provider, Context } = createDataContext(
     registerReducer,
-    { getJobsite, getVaccine, registerInfo},
-    {errorMessage:'',loading: false, getJobsite:[], getVaccine:[]}
+    { getJobsite, getVaccine, registerInfo, getProvince, getMe, getBrgy},
+    {errorMessage:'',loading: false, getJobsite:[], getVaccine:[],getProvince:[], getMe:[], getBrgy:[]}
 )

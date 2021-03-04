@@ -27,7 +27,7 @@ import {Context as RegisterContext} from '../context/registerContext'
 
 const RegisterScreen = ({navigation})=>{
 
-    const { state, getJobsite, getVaccine,registerInfo } = useContext(RegisterContext)
+    const { state, getJobsite, getVaccine,registerInfo, getProvince, getMe, getBrgy } = useContext(RegisterContext)
 
     const [username,setUsername] = useState('')
     const [lastName,setLastname] = useState('')
@@ -41,6 +41,9 @@ const RegisterScreen = ({navigation})=>{
     const [firstDose, setFirstDose] = useState('')
     const [secondDose, setSecondDose] = useState('')
     const [msg, setMsg] = useState('')
+    const [province, setProvince] = useState('')
+    const [municipality, setMunicipality] = useState('')
+    const [brgy, setBrgy] = useState('')
 
     const [imageUrl, setImageUrl] = useState('')
     const [imageData, setData] = useState('')
@@ -56,8 +59,17 @@ const RegisterScreen = ({navigation})=>{
     useEffect(()=>{
         getJobsite()
         getVaccine()
+        getProvince()
         
     },[])
+
+    useEffect(()=>{
+        getMe({province})
+    },[province])
+
+    useEffect(()=>{
+        getBrgy({municipality})
+    },[municipality])
 
     const uploadPhoto = ()=>{
         ImagePicker.openPicker({
@@ -94,8 +106,14 @@ const RegisterScreen = ({navigation})=>{
         else if(!email){
             alert('Please input your Email')
         }
-        else if(!address){
-            alert('Please input your Address')
+        else if(!province){
+            alert('Please input your Province')
+        }
+        else if(!municipality){
+            alert('Please input your Municipality')
+        }
+        else if(!brgy){
+            alert('Please input your Barangay')
         }
         else if(!jobsite){
             alert('Please input your Jobsite')
@@ -130,7 +148,9 @@ const RegisterScreen = ({navigation})=>{
                         firstName,
                         middleName,
                         birthdate,
-                        address,
+                        province,
+                        municipality,
+                        brgy,
                         jobsite,
                         vaccine,
                         firstDose,
@@ -277,12 +297,59 @@ const RegisterScreen = ({navigation})=>{
                                 onChangeText={setEmail}
                             />
 
-                            <Text style={styles.label}>Address</Text>
-                            <TextInput
-                                placeholder ='Address'
-                                style={styles.txtInput}
-                                onChangeText={setAddress}
-                            />
+                            <Text style={styles.label}>Province</Text>
+                            <Picker
+                                mode="dropdown"
+                                placeholder="Select province"
+                                placeholderStyle={{ color: "#bfbfbf"}}
+                                placeholderIconColor="#007aff"
+                                style={[styles.txtInput]}
+                                selectedValue={province}
+                                onValueChange={setProvince}
+                            >
+                                <Picker.Item style ={{color:'red'}} label="Select Province" value=""/>
+                                {
+                                    state.getProvince.map(item=>(
+                                        <Picker.Item label={item.provinceName} value={item.provinceId} />
+                                    ))
+                                }
+                            </Picker>
+
+                            <Text style={styles.label}>Municipality</Text>
+                            <Picker
+                                mode="dropdown"
+                                placeholder="Select municipality"
+                                placeholderStyle={{ color: "#bfbfbf"}}
+                                placeholderIconColor="#007aff"
+                                style={[styles.txtInput]}
+                                selectedValue={municipality}
+                                onValueChange={setMunicipality}
+                            >
+                                <Picker.Item style ={{color:'red'}} label="Select Municipality" value=""/>
+                                {
+                                    state.getMe.map(item=>(
+                                        <Picker.Item label={item.muniName} value={item.muniId} />
+                                    ))
+                                }
+                            </Picker>
+
+                            <Text style={styles.label}>Barangay</Text>
+                            <Picker
+                                mode="dropdown"
+                                placeholder="Select barangay"
+                                placeholderStyle={{ color: "#bfbfbf"}}
+                                placeholderIconColor="#007aff"
+                                style={[styles.txtInput]}
+                                selectedValue={brgy}
+                                onValueChange={setBrgy}
+                            >
+                                <Picker.Item style ={{color:'red'}} label="Select Barangay" value=""/>
+                                {
+                                    state.getBrgy.map(item=>(
+                                        <Picker.Item label={item.brgyName} value={item.brgyId} />
+                                    ))
+                                }
+                            </Picker>
 
                             <Text style={styles.label}>Jobsite</Text>
                             <Picker

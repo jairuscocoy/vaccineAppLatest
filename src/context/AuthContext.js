@@ -17,7 +17,7 @@ const authReducer = (state, action) =>{
 const resolving = dispatch => async() =>{
     const token = await AsyncStorage.getItem('token')
     // alert('This is the token: '+token)
-    if(token){
+    if(!token){
         // dispatch({type: 'signin', payload: token})
         navigate('mainFlow')
     }else{
