@@ -17,7 +17,7 @@ const authReducer = (state, action) =>{
 const resolving = dispatch => async() =>{
     const token = await AsyncStorage.getItem('token')
     // alert('This is the token: '+token)
-    if(!token){
+    if(token){
         // dispatch({type: 'signin', payload: token})
         navigate('mainFlow')
     }else{
@@ -27,34 +27,42 @@ const resolving = dispatch => async() =>{
 }
 
 const login = (dispatch) => async ({ username, password })=>{
-    
-    try{
-        dispatch({type:'isReading', payload:true})
-
-        const response = await axios.get(`/signIn.php?username=${username}&password=${password}`)
-
-        // await AsyncStorage.setItem('token', response.data.owwaid)
-        
-        
-        if(!response.data.success){
-            dispatch({type:'isReading', payload:false})
-            alert("Wrong Username or password")
-        }
-        else{
-
-            dispatch({type: 'signin', payload: {token : response.data.id, loading : false}})
-            await AsyncStorage.setItem('token', response.data.id)
-            navigate('mainFlow')
-        }
-        // 
-    }catch (err){
-        console.log(err)
-        alert('Oops! something went wrong :(')
-        dispatch({
-            type:'add error',
-            payload : {error: 'Something went wrong', loading: false}
-        })
+    if(!username){
+        alert('Please insert a username')
     }
+    else if(!password){
+        alert('Please insert your password')
+    }
+    else{
+        try{
+            dispatch({type:'isReading', payload:true})
+    
+            const response = await axios.get(`/signIn.php?username=${username}&password=${password}`)
+    
+            // await AsyncStorage.setItem('token', response.data.owwaid)
+            
+            
+            if(!response.data.success){
+                dispatch({type:'isReading', payload:false})
+                alert("Wrong Username or password")
+            }
+            else{
+    
+                dispatch({type: 'signin', payload: {token : response.data.id, loading : false}})
+                await AsyncStorage.setItem('token', response.data.id)
+                navigate('mainFlow')
+            }
+            // 
+        }catch (err){
+            console.log(err)
+            alert('Oops! something went wrong :(')
+            dispatch({
+                type:'add error',
+                payload : {error: 'Something went wrong', loading: false}
+            })
+        }
+    }
+    
     
     
 }

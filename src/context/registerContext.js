@@ -170,8 +170,8 @@ const registerInfo = dispatch => async({
                                
                         
                             }catch (err){
-                                // alert(JSON.stringify(err))
-                                alert('Something went wrong, maybe find a strong internet connection')
+                                alert(JSON.stringify(err))
+                                // alert('Something went wrong, maybe find a strong internet connection')
                                 dispatch({type:'isReading', payload:false})
                                
                             }

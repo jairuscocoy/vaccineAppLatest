@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VaccineApp</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">P9HKrE9ZucmyfUd-FAf3PMPYQtM7a7yLo-D-n</string>
 </resources>

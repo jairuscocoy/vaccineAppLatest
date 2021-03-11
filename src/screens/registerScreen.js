@@ -127,9 +127,6 @@ const RegisterScreen = ({navigation})=>{
         else if(!secondDose){
             alert('Please input your Second Dose')
         }
-        else if(!msg){
-            alert('Please input an adverse reaction')
-        }
         else{
             let dateStamp = moment().format('x')
             RNFetchBlob.fetch('POST', 'https://bap.owwa.gov.ph/cocoy/upload_image.php', {
@@ -142,7 +139,7 @@ const RegisterScreen = ({navigation})=>{
                 // alert(JSON.stringify(resp.data))
                 
                 if(resp.data){
-                    const imageUrl = `https://bap.owwa.gov.ph/cocoy/vaccine_photos/${dateStamp}.owwa.jpeg`
+                    const imageUrl = `https://bap.owwa.gov.ph/cocoy/vaccine_photos/${dateStamp}_owwa.jpeg`
                     registerInfo({
                         lastName,
                         firstName,

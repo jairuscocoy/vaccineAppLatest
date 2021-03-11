@@ -80,7 +80,7 @@ const MainScreen = ()=>{
                                 <Text style={styles.valueV}>{moment(state.getInfo.datevaccine1).format("YYYY - MMM - DD")}</Text>
 
                                 <Text style={styles.label}>Address</Text>
-                                <Text style={styles.valueV}>{state.getInfo.streetaddress}</Text>
+                                <Text style={styles.valueV}>{state.getInfo.brgy} {state.getInfo.municipality},{state.getInfo.province}</Text>
 
                                 <View style={styles.bottomContainer}>
                                     <View style={{alignItems:'center'}}>
